@@ -108,32 +108,87 @@ document.addEventListener("DOMContentLoaded", function () {
         ]
     };
 
-    const categories = Object.keys(animalData);
+    function renderTables() {
+        container.innerHTML = '';
+        const categories = Object.keys(animalData);
 
-    categories.forEach(category => {
-        const data = animalData[category];
-        if (!data.length) return;
+        categories.forEach(category => {
+            const data = animalData[category];
+            if (!data.length) return;
 
-        let tableHTML = `
-            <div class="category-header">${category}</div>
-            <table class="table"><tbody>`;
+            let tableHTML = `
+                <div class="category-header">${category}</div>
+                <table class="table"><tbody>`;
 
-        data.forEach((animal, index) => {
-            if (index % 2 === 0) tableHTML += `<tr>`;
-            tableHTML += `
-                <td>
-                    <div class="animal-card">
-                        <p><strong>Species:</strong> ${animal.Species}</p>
-                        <p><strong>Name:</strong> ${animal.Name}</p>
-                        <p><strong>Size:</strong> ${animal.Size}</p>
-                        <p><strong>Location:</strong> ${animal.Location}</p>
-                        <img src="${animal.img}" alt="${animal.Name}">
-                    </div>
-                </td>`;
-            if (index % 2 === 1 || index === data.length - 1) tableHTML += `</tr>`;
+            data.forEach((animal, index) => {
+                if (index % 2 === 0) tableHTML += `<tr>`;
+                tableHTML += `
+                    <td>
+                        <div class="animal-card">
+                            <div class="card-actions">
+                                <button class="edit-btn" onclick="editAnimal('${category}', ${index})" title="Edit">✎</button>
+                                <button class="delete-btn" onclick="deleteAnimal('${category}', ${index})" title="Delete">✖</button>
+                            </div>
+                            <div class="card-content" id="content-${category}-${index}">
+                                <p><strong>Species:</strong> ${animal.Species}</p>
+                                <p><strong>Name:</strong> ${animal.Name}</p>
+                                <p><strong>Size:</strong> ${animal.Size}</p>
+                                <p><strong>Location:</strong> ${animal.Location}</p>
+                                <img src="${animal.img}" alt="${animal.Name}">
+                            </div>
+                            <div class="edit-form" id="edit-${category}-${index}" style="display: none;">
+                                <input type="text" name="species" value="${animal.Species}" placeholder="Species">
+                                <input type="text" name="name" value="${animal.Name}" placeholder="Name">
+                                <input type="text" name="size" value="${animal.Size}" placeholder="Size">
+                                <input type="text" name="location" value="${animal.Location}" placeholder="Location">
+                                <button onclick="saveEdit('${category}', ${index})">Save</button>
+                                <button onclick="cancelEdit('${category}', ${index})">Cancel</button>
+                            </div>
+                        </div>
+                    </td>`;
+                if (index % 2 === 1 || index === data.length - 1) tableHTML += `</tr>`;
+            });
+
+            tableHTML += `</tbody></table>`;
+            container.innerHTML += tableHTML;
         });
+    }
 
-        tableHTML += `</tbody></table>`;
-        container.innerHTML += tableHTML;
-    });
+    renderTables();
+
+    window.editAnimal = function(category, index) {
+        const contentDiv = document.getElementById(`content-${category}-${index}`);
+        const editDiv = document.getElementById(`edit-${category}-${index}`);
+        contentDiv.style.display = 'none';
+        editDiv.style.display = 'block';
+    };
+
+    window.saveEdit = function(category, index) {
+        const editDiv = document.getElementById(`edit-${category}-${index}`);
+        const inputs = editDiv.getElementsByTagName('input');
+        
+        animalData[category][index] = {
+            Species: inputs[0].value,
+            Name: inputs[1].value,
+            Size: inputs[2].value,
+            Location: inputs[3].value,
+            img: animalData[category][index].img 
+        };
+        
+        renderTables();
+    };
+
+    window.cancelEdit = function(category, index) {
+        const contentDiv = document.getElementById(`content-${category}-${index}`);
+        const editDiv = document.getElementById(`edit-${category}-${index}`);
+        contentDiv.style.display = 'block';
+        editDiv.style.display = 'none';
+    };
+
+    window.deleteAnimal = function(category, index) {
+        if (confirm('Are you sure you want to delete this animal?')) {
+            animalData[category].splice(index, 1);
+            renderTables();
+        }
+    };
 });
