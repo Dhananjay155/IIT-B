@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const container = document.getElementById("animalTables");
+    const sortSelect = document.getElementById("sort-by");
+    const animalForm = document.getElementById("animal-form");
     
     const animalData = {
         "Big Cats": [
@@ -108,6 +110,39 @@ document.addEventListener("DOMContentLoaded", function () {
         ]
     };
 
+    animalForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+        
+        const category = document.getElementById("category").value;
+        const species = document.getElementById("species").value;
+        const name = document.getElementById("name").value;
+        const size = document.getElementById("size").value;
+        const location = document.getElementById("location").value;
+        const image = document.getElementById("image").value;
+        const editIndex = document.getElementById("edit-index").value;
+
+        const newAnimal = {
+            "Species": species,
+            "Name": name,
+            "Size": size,
+            "Location": location,
+            "img": image
+        };
+
+        if (editIndex !== "") {
+            animalData[category][parseInt(editIndex)] = newAnimal;
+            document.getElementById("edit-index").value = ""; 
+        } else {
+            if (!animalData[category]) {
+                animalData[category] = [];
+            }
+            animalData[category].push(newAnimal);
+        }
+        
+        animalForm.reset();
+        renderTables();
+    });
+
     function renderTables() {
         container.innerHTML = '';
         const categories = Object.keys(animalData);
@@ -153,7 +188,8 @@ document.addEventListener("DOMContentLoaded", function () {
             container.innerHTML += tableHTML;
         });
     }
-
+    sortSelect.addEventListener('change', renderTables);
+    
     renderTables();
 
     window.editAnimal = function(category, index) {
