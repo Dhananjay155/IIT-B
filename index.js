@@ -111,7 +111,17 @@ class AnimalTable {
         ]
     };
     this.animalForm.addEventListener("submit", (e) => this.addOrEditAnimal(e));
+    this.sortSelect.addEventListener("change", () => this.renderTables());
     this.renderTables();
+}
+sortAnimals(data) {
+    const sortBy = this.sortSelect.value;
+
+    return data.sort((a, b) => {
+        if (sortBy === "name") return a.Name.localeCompare(b.Name);
+        if (sortBy === "size") return parseInt(a.Size) - parseInt(b.Size);
+        return 0; // Default order
+    });
 }
 
 addOrEditAnimal(e) {
@@ -135,6 +145,7 @@ addOrEditAnimal(e) {
         this.animalData[category].push(newAnimal);
     }
 
+    
     this.animalForm.reset();
     this.renderTables();
 }
@@ -142,8 +153,8 @@ addOrEditAnimal(e) {
 renderTables() {
     this.container.innerHTML = "";
     Object.keys(this.animalData).forEach((category) => {
-        const data = this.animalData[category];
-        if (!data.length) return;
+        let data = [...this.animalData[category]];
+        data = this.sortAnimals(data);
 
         let tableHTML = `<div class="category-header">${category}</div><table class="table"><tbody>`;
         data.forEach((animal, index) => {

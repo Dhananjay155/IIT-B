@@ -8,12 +8,14 @@ body {
 
 .container {
     max-width: 1200px;
+    background: #d0d7d8;
     margin: auto;
     padding: 30px;
-    background: rgba(255, 255, 255, 0.95);
+    /* background: rgba(255, 255, 255, 0.95); */
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease-in-out;
+    
 }
 
 .category-header {
@@ -68,6 +70,8 @@ body {
     flex: 1;
     padding: 5px 10px;
     font-size: 14px;
+    border-radius: 10px;
+    border: 1px solid;
 }
 
 
@@ -98,7 +102,7 @@ button {
     background: white;
     padding: 0;
     vertical-align: top;
-    border: 1px solid;
+    border: 1px solid #747d88;
     width: 50%;
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
