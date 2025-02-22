@@ -1,9 +1,10 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const container = document.getElementById("animalTables");
-    const sortSelect = document.getElementById("sort-by");
-    const animalForm = document.getElementById("animal-form");
-    
-    const animalData = {
+class AnimalTable {
+    constructor() {
+        this.container = document.getElementById("animalTables");
+        this.sortSelect = document.getElementById("sort-by");
+        this.animalForm = document.getElementById("animal-form");
+
+        this.animalData = {
         "Big Cats": [
             {
                 "Species": "Big Cats",
@@ -109,141 +110,137 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         ]
     };
+    this.animalForm.addEventListener("submit", (e) => this.addOrEditAnimal(e));
+    this.renderTables();
+}
 
-    animalForm.addEventListener("submit", function(e) {
-        e.preventDefault();
-        
-        const category = document.getElementById("category").value;
-        const species = document.getElementById("species").value;
-        const name = document.getElementById("name").value;
-        const size = document.getElementById("size").value;
-        const location = document.getElementById("location").value;
-        const image = document.getElementById("image").value;
-        const editIndex = document.getElementById("edit-index").value;
+addOrEditAnimal(e) {
+    e.preventDefault();
 
-        const newAnimal = {
-            "Species": species,
-            "Name": name,
-            "Size": size,
-            "Location": location,
-            "img": image
-        };
+    const category = document.getElementById("category").value;
+    const species = document.getElementById("species").value;
+    const name = document.getElementById("name").value;
+    const size = document.getElementById("size").value;
+    const location = document.getElementById("location").value;
+    const image = document.getElementById("image").value;
+    const editIndex = document.getElementById("edit-index").value;
 
-        if (editIndex !== "") {
-            animalData[category][parseInt(editIndex)] = newAnimal;
-            document.getElementById("edit-index").value = ""; 
-        } else {
-            if (!animalData[category]) {
-                animalData[category] = [];
-            }
-            animalData[category].push(newAnimal);
-        }
-        
-        animalForm.reset();
-        renderTables();
-    });
+    const newAnimal = { Species: species, Name: name, Size: size, Location: location, img: image };
 
-    function renderTables() {
-        container.innerHTML = '';
-        const categories = Object.keys(animalData);
+    if (editIndex !== "") {
+        this.animalData[category][parseInt(editIndex)] = newAnimal;
+        document.getElementById("edit-index").value = "";
+    } else {
+        if (!this.animalData[category]) this.animalData[category] = [];
+        this.animalData[category].push(newAnimal);
+    }
 
-        categories.forEach(category => {
-            const data = animalData[category];
-            if (!data.length) return;
+    this.animalForm.reset();
+    this.renderTables();
+}
 
-            let tableHTML = `
-                <div class="category-header">${category}</div>
-                <table class="table"><tbody>`;
+renderTables() {
+    this.container.innerHTML = "";
+    Object.keys(this.animalData).forEach((category) => {
+        const data = this.animalData[category];
+        if (!data.length) return;
 
-            data.forEach((animal, index) => {
-                if (index % 2 === 0) tableHTML += `<tr>`;
-                tableHTML += `
-                    <td>
-                        <div class="animal-card">
-                            <div class="card-actions">
-                                <button class="edit-btn" data-category="${category}" data-index="${index}">✎</button>
-                                <button class="delete-btn" data-category="${category}" data-index="${index}">✖</button>
-                            </div>
-                            <div class="card-content" id="content-${category}-${index}">
-                                <p><strong>Species:</strong> ${animal.Species}</p>
-                                <p><strong>Name:</strong> ${animal.Name}</p>
-                                <p><strong>Size:</strong> ${animal.Size}</p>
-                                <p><strong>Location:</strong> ${animal.Location}</p>
-                                <img src="${animal.img}" alt="${animal.Name}">
-                            </div>
-                            <div class="edit-form" id="edit-${category}-${index}" style="display: none;">
-                                <input type="text" name="species" value="${animal.Species}" placeholder="Species">
-                                <input type="text" name="name" value="${animal.Name}" placeholder="Name">
-                                <input type="text" name="size" value="${animal.Size}" placeholder="Size">
-                                <input type="text" name="location" value="${animal.Location}" placeholder="Location">
-                                <button class="save-btn" data-category="${category}" data-index="${index}">Save</button>
-                                <button class="cancel-btn" data-category="${category}" data-index="${index}">Cancel</button>
+        let tableHTML = `<div class="category-header">${category}</div><table class="table"><tbody>`;
+        data.forEach((animal, index) => {
+            if (index % 2 === 0) tableHTML += `<tr>`;
+            tableHTML += `
+                <td>
+                    <div class="animal-card">
+                        <div class="card-actions">
+                            <button class="edit-btn" data-category="${category}" data-index="${index}">✎</button>
+                            <button class="delete-btn" data-category="${category}" data-index="${index}">✖</button>
+                        </div>
+                        <div class="card-content" id="content-${category}-${index}">
+                            <img src="${animal.img}" alt="${animal.Name}">
+                            <div class="card-text">
+                            <p><strong>Species:</strong> ${animal.Species}</p>
+                            <p><strong>Name:</strong> ${animal.Name}</p>
+                            <p><strong>Size:</strong> ${animal.Size}</p>
+                            <p><strong>Location:</strong> ${animal.Location}</p>
                             </div>
                         </div>
-                    </td>`;
-                if (index % 2 === 1 || index === data.length - 1) tableHTML += `</tr>`;
-            });
-
-            tableHTML += `</tbody></table>`;
-            container.innerHTML += tableHTML;
+                        <div class="edit-form" id="edit-${category}-${index}" style="display: none;">
+                            <input type="text" name="species" value="${animal.Species}">
+                            <input type="text" name="name" value="${animal.Name}">
+                            <input type="text" name="size" value="${animal.Size}">
+                            <input type="text" name="location" value="${animal.Location}">
+                            <button class="save-btn" data-category="${category}" data-index="${index}">Save</button>
+                            <button class="cancel-btn" data-category="${category}" data-index="${index}">Cancel</button>
+                        </div>
+                    </div>
+                </td>`;
+            if (index % 2 === 1 || index === data.length - 1) tableHTML += `</tr>`;
         });
-        addEventListeners();
+
+        tableHTML += `</tbody></table>`;
+        this.container.innerHTML += tableHTML;
+    });
+
+    this.addEventListeners();
+}
+
+addEventListeners() {
+    document.querySelectorAll(".edit-btn").forEach((btn) =>
+        btn.addEventListener("click", (e) => this.toggleEditForm(e))
+    );
+
+    document.querySelectorAll(".save-btn").forEach((btn) =>
+        btn.addEventListener("click", (e) => this.saveEdit(e))
+    );
+
+    document.querySelectorAll(".cancel-btn").forEach((btn) =>
+        btn.addEventListener("click", (e) => this.cancelEdit(e))
+    );
+
+    document.querySelectorAll(".delete-btn").forEach((btn) =>
+        btn.addEventListener("click", (e) => this.deleteAnimal(e))
+    );
+}
+
+toggleEditForm(e) {
+    const category = e.target.dataset.category;
+    const index = parseInt(e.target.dataset.index);
+    document.getElementById(`content-${category}-${index}`).style.display = "none";
+    document.getElementById(`edit-${category}-${index}`).style.display = "block";
+}
+
+saveEdit(e) {
+    const category = e.target.dataset.category;
+    const index = parseInt(e.target.dataset.index);
+    const editDiv = document.getElementById(`edit-${category}-${index}`);
+    const inputs = editDiv.getElementsByTagName("input");
+
+    this.animalData[category][index] = {
+        Species: inputs[0].value,
+        Name: inputs[1].value,
+        Size: inputs[2].value,
+        Location: inputs[3].value,
+        img: this.animalData[category][index].img // Preserve image
+    };
+
+    this.renderTables();
+}
+
+cancelEdit(e) {
+    const category = e.target.dataset.category;
+    const index = parseInt(e.target.dataset.index);
+    document.getElementById(`content-${category}-${index}`).style.display = "block";
+    document.getElementById(`edit-${category}-${index}`).style.display = "none";
+}
+
+deleteAnimal(e) {
+    const category = e.target.dataset.category;
+    const index = parseInt(e.target.dataset.index);
+    if (confirm("Are you sure you want to delete this animal?")) {
+        this.animalData[category].splice(index, 1);
+        this.renderTables();
     }
+}
+}
 
-    function addEventListeners() {
-        document.querySelectorAll('.edit-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const category = this.dataset.category;
-                const index = parseInt(this.dataset.index);
-                const contentDiv = document.getElementById(`content-${category}-${index}`);
-                const editDiv = document.getElementById(`edit-${category}-${index}`);
-                contentDiv.style.display = 'none';
-                editDiv.style.display = 'block';
-            });
-        });
-
-        document.querySelectorAll('.save-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const category = this.dataset.category;
-                const index = parseInt(this.dataset.index);
-                const editDiv = document.getElementById(`edit-${category}-${index}`);
-                const inputs = editDiv.getElementsByTagName('input');
-                
-                animalData[category][index] = {
-                    Species: inputs[0].value,
-                    Name: inputs[1].value,
-                    Size: inputs[2].value,
-                    Location: inputs[3].value,
-                    img: animalData[category][index].img 
-                };
-                
-                renderTables();
-            });
-        });
-
-        document.querySelectorAll('.cancel-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const category = this.dataset.category;
-                const index = parseInt(this.dataset.index);
-                const contentDiv = document.getElementById(`content-${category}-${index}`);
-                const editDiv = document.getElementById(`edit-${category}-${index}`);
-                contentDiv.style.display = 'block';
-                editDiv.style.display = 'none';
-            });
-        });
-
-        document.querySelectorAll('.delete-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const category = this.dataset.category;
-                const index = parseInt(this.dataset.index);
-                if (confirm('Are you sure you want to delete this animal?')) {
-                    animalData[category].splice(index, 1);
-                    renderTables();
-                }
-            });
-        });
-    }
-
-    sortSelect.addEventListener('change', renderTables);
-    renderTables();
-});
+document.addEventListener("DOMContentLoaded", () => new AnimalTable());

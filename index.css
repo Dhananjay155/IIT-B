@@ -1,6 +1,5 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    text-align: center;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     padding: 20px;
     min-height: 100vh;
@@ -28,6 +27,7 @@ body {
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
     position: relative;
     overflow: hidden;
+    text-align: center;
 }
 
 .category-header::after {
@@ -47,7 +47,7 @@ body {
 }
 
 .form-section {
-    max-width: 600px;
+    /* max-width: 600px; */
     margin: 20px auto;
     padding: 20px;
     background: white;
@@ -83,7 +83,7 @@ button {
     border: none;
     color: white;
     background: linear-gradient(to right, #ff6b6b, #ee5253);
-    transform: scale(1.05);
+    cursor: pointer;
 }
 
 .table {
@@ -91,12 +91,14 @@ button {
     margin-top: 20px;
     border-collapse: separate;
     border-spacing: 20px;
+    
 }
 
 .table td {
     background: white;
     padding: 0;
     vertical-align: top;
+    border: 1px solid;
     width: 50%;
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
@@ -119,8 +121,24 @@ button {
     transition: all 0.3s ease;
 }
 
+.card-content{
+    display: flex;
+}
+
 .animal-card:hover .card-actions {
     opacity: 1;
+}
+
+.edit-form {
+    margin-left: 50px;
+    height: 100px;
+    width: 200px;
+    
+}
+.edit-form input{
+    height: 20px;
+    width: auto;
+    margin: 5px;
 }
 
 .edit-btn, .delete-btn {
@@ -131,6 +149,7 @@ button {
     font-size: 14px;
     transition: all 0.3s ease;
     color: white;
+    
 }
 
 .edit-btn {
@@ -141,11 +160,15 @@ button {
     background: linear-gradient(to right, #ff6b6b, #ee5253);
 }
 
+.animal-card {
+    padding: 10px;
+}
+
 .animal-card img {
-    width: auto;
-    height: 180px;
+    /* width: auto; */
+    height: 120px;
     display: block;
-    margin: 15px auto;
+    margin: 15px;
     border-radius: 15px;
     border: 3px solid transparent;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -154,10 +177,13 @@ button {
 }
 
 .animal-card:hover img {
-    transform: scale(1.15);
+    transform: scale(1.05);
     border-color: #4a90e2;
 }
-
+.card-text{
+    flex: 1;
+    margin-left: 50px;
+}
 @media (max-width: 768px) {
     .container {
         padding: 15px;
