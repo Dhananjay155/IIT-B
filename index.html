@@ -9,14 +9,17 @@
 <body>
 
 <div class="container">
-    <h1 style="color: #2d3436;">Animal Kingdom Collection</h1>
-    <div class="form-section">
-        <label for="sort-by">Sort by:</label>
-        <select id="sort-by">
+  <h1>Animal Tables</h1>
+    
+  <div class="form-section">
+      <label for="sort-by">Sort by:</label>
+      <select id="sort-by">
           <option value="name">Name</option>
           <option value="size">Size</option>
           <option value="location">Location</option>
-        </select>
+      </select>
+  
+  
         <h3>Add/Edit Animal</h3>
         <form id="animal-form">
           <input type="hidden" id="edit-index" />
@@ -38,9 +41,8 @@
           <button type="submit">Submit</button>
         </form>
       </div>
-    <div id="animalTables"></div>
-    
-</div>
+        <div id="animalTables"></div>
+      </div>
 
 <script src="index.js"></script>
 

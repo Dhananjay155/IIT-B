@@ -161,8 +161,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td>
                         <div class="animal-card">
                             <div class="card-actions">
-                                <button class="edit-btn" onclick="editAnimal('${category}', ${index})" title="Edit">✎</button>
-                                <button class="delete-btn" onclick="deleteAnimal('${category}', ${index})" title="Delete">✖</button>
+                                <button class="edit-btn" data-category="${category}" data-index="${index}">✎</button>
+                                <button class="delete-btn" data-category="${category}" data-index="${index}">✖</button>
                             </div>
                             <div class="card-content" id="content-${category}-${index}">
                                 <p><strong>Species:</strong> ${animal.Species}</p>
@@ -176,8 +176,8 @@ document.addEventListener("DOMContentLoaded", function () {
                                 <input type="text" name="name" value="${animal.Name}" placeholder="Name">
                                 <input type="text" name="size" value="${animal.Size}" placeholder="Size">
                                 <input type="text" name="location" value="${animal.Location}" placeholder="Location">
-                                <button onclick="saveEdit('${category}', ${index})">Save</button>
-                                <button onclick="cancelEdit('${category}', ${index})">Cancel</button>
+                                <button class="save-btn" data-category="${category}" data-index="${index}">Save</button>
+                                <button class="cancel-btn" data-category="${category}" data-index="${index}">Cancel</button>
                             </div>
                         </div>
                     </td>`;
@@ -187,44 +187,63 @@ document.addEventListener("DOMContentLoaded", function () {
             tableHTML += `</tbody></table>`;
             container.innerHTML += tableHTML;
         });
+        addEventListeners();
     }
+
+    function addEventListeners() {
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const category = this.dataset.category;
+                const index = parseInt(this.dataset.index);
+                const contentDiv = document.getElementById(`content-${category}-${index}`);
+                const editDiv = document.getElementById(`edit-${category}-${index}`);
+                contentDiv.style.display = 'none';
+                editDiv.style.display = 'block';
+            });
+        });
+
+        document.querySelectorAll('.save-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const category = this.dataset.category;
+                const index = parseInt(this.dataset.index);
+                const editDiv = document.getElementById(`edit-${category}-${index}`);
+                const inputs = editDiv.getElementsByTagName('input');
+                
+                animalData[category][index] = {
+                    Species: inputs[0].value,
+                    Name: inputs[1].value,
+                    Size: inputs[2].value,
+                    Location: inputs[3].value,
+                    img: animalData[category][index].img 
+                };
+                
+                renderTables();
+            });
+        });
+
+        document.querySelectorAll('.cancel-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const category = this.dataset.category;
+                const index = parseInt(this.dataset.index);
+                const contentDiv = document.getElementById(`content-${category}-${index}`);
+                const editDiv = document.getElementById(`edit-${category}-${index}`);
+                contentDiv.style.display = 'block';
+                editDiv.style.display = 'none';
+            });
+        });
+
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const category = this.dataset.category;
+                const index = parseInt(this.dataset.index);
+                if (confirm('Are you sure you want to delete this animal?')) {
+                    animalData[category].splice(index, 1);
+                    renderTables();
+                }
+            });
+        });
+    }
+
     sortSelect.addEventListener('change', renderTables);
-    
     renderTables();
-
-    window.editAnimal = function(category, index) {
-        const contentDiv = document.getElementById(`content-${category}-${index}`);
-        const editDiv = document.getElementById(`edit-${category}-${index}`);
-        contentDiv.style.display = 'none';
-        editDiv.style.display = 'block';
-    };
-
-    window.saveEdit = function(category, index) {
-        const editDiv = document.getElementById(`edit-${category}-${index}`);
-        const inputs = editDiv.getElementsByTagName('input');
-        
-        animalData[category][index] = {
-            Species: inputs[0].value,
-            Name: inputs[1].value,
-            Size: inputs[2].value,
-            Location: inputs[3].value,
-            img: animalData[category][index].img 
-        };
-        
-        renderTables();
-    };
-
-    window.cancelEdit = function(category, index) {
-        const contentDiv = document.getElementById(`content-${category}-${index}`);
-        const editDiv = document.getElementById(`edit-${category}-${index}`);
-        contentDiv.style.display = 'block';
-        editDiv.style.display = 'none';
-    };
-
-    window.deleteAnimal = function(category, index) {
-        if (confirm('Are you sure you want to delete this animal?')) {
-            animalData[category].splice(index, 1);
-            renderTables();
-        }
-    };
 });
